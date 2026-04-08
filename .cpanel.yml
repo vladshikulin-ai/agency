@@ -2,9 +2,8 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/xsx/public_html/
-    - /bin/cp -r .htaccess "$DEPLOYPATH"
-    - /bin/cp -r _init.php "$DEPLOYPATH"
-    - /bin/cp -r index.php "$DEPLOYPATH"
-    - /bin/cp -r track.php "$DEPLOYPATH"
-    - /bin/cp -r admin "$DEPLOYPATH"
-    - /bin/cp -r data "$DEPLOYPATH"
+    - /bin/cp -rf .htaccess "$DEPLOYPATH"
+    - /bin/cp -rf _init.php "$DEPLOYPATH"
+    - /bin/cp -rf index.php "$DEPLOYPATH"
+    - /bin/cp -rf track.php "$DEPLOYPATH"
+    - /bin/cp -rf admin "$DEPLOYPATH"
