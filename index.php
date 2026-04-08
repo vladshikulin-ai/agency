@@ -122,7 +122,8 @@ $trustIcons = [
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         /* ── Частицы ── */
@@ -385,13 +386,30 @@ $trustIcons = [
         }
 
         @media (max-width: 520px) {
-            .wrap { padding: 52px 20px 90px; }
-            .headline { letter-spacing: -0.8px; }
-            .btn { padding: 17px 18px; }
-            .award { padding: 0 12px; }
+            .wrap { padding: 56px 16px 80px; }
+            .headline { font-size: 28px; letter-spacing: -0.5px; }
+            .logo-sign { font-size: 52px; }
+            .logo-ring { margin-bottom: 20px; }
+            .btn { width: 90%; padding: 13px 16px; font-size: 12px; }
+            .slogan { font-size: 13px; }
+            .slogan-above { margin-bottom: 28px; }
+            .awards { margin-top: 28px; }
+            .award { padding: 14px 8px; min-height: 68px; }
             .award-title { font-size: 10px; }
-            .lang-sw { top: 12px; right: 12px; }
-            .lang-btn { padding: 7px 9px; }
+            .award-sub { font-size: 8px; }
+            .laurel { width: 13px; height: 20px; }
+            .lang-sw { top: 10px; right: 10px; }
+            .lang-btn { padding: 6px 8px; font-size: 9px; }
+        }
+
+        @media (max-height: 640px) {
+            .wrap { justify-content: flex-start; padding-top: 60px; }
+            .logo-sign { font-size: 44px; }
+            .logo-ring { margin-bottom: 16px; }
+            .headline { font-size: 26px; margin-bottom: 12px; }
+            .slogan-above { margin-bottom: 20px; }
+            .buttons { gap: 8px; }
+            .awards { margin-top: 20px; }
         }
     </style>
 </head>
