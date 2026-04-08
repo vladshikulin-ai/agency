@@ -1,0 +1,49 @@
+# ── Безопасность ──────────────────────────────────────────────────────────────
+
+# Отключить листинг папок
+Options -Indexes -MultiViews
+
+# Заблокировать прямой доступ к служебным файлам
+<FilesMatch "^(_init|bootstrap)\.php$">
+    Require all denied
+</FilesMatch>
+
+# Заблокировать SQLite, JSON, логи, текстовые файлы напрямую
+<FilesMatch "\.(db|sqlite|sqlite3|json|log|txt|bak|env)$">
+    Require all denied
+</FilesMatch>
+
+# Заблокировать скрытые файлы (.git, .env и т.д.)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# ── Заголовки безопасности ────────────────────────────────────────────────────
+
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Permissions-Policy "geolocation=(), camera=(), microphone=()"
+</IfModule>
+
+# ── Сжатие ────────────────────────────────────────────────────────────────────
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript
+</IfModule>
+
+# ── Кэш для статики ───────────────────────────────────────────────────────────
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+</IfModule>
+
+# ── Редирект HTTP → HTTPS (раскомментировать после настройки SSL) ─────────────
+
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

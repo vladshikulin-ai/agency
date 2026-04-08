@@ -1,0 +1,7 @@
+# Дополнительная защита папки admin/
+Options -Indexes
+
+# Разрешить доступ только к index.php, save.php, logout.php
+<FilesMatch "^(?!index|save|logout).*\.php$">
+    Require all denied
+</FilesMatch>

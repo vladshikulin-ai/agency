@@ -1,0 +1,11 @@
+# База данных и секреты — никогда не коммитить
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Системное
+.claude/
+.DS_Store
+Thumbs.db
+*.log
