@@ -48,6 +48,42 @@ for ($i = 0; $i < 3; $i++) {
 }
 
 $csrfToken = csrfToken();
+
+// ─── Карточки доверия (по языку) ─────────────────────────────────────────────
+$trustCards = [
+    'ru' => [
+        ['icon' => 'shield', 'label' => 'Гарантия выплат',      'sub' => '100% без задержек'],
+        ['icon' => 'users',  'label' => '3000+ клиентов',        'sub' => 'доверяют нам'],
+        ['icon' => 'star',   'label' => 'Надёжный партнёр',      'sub' => 'с 2018 года'],
+        ['icon' => 'zap',    'label' => 'Быстрый старт',         'sub' => 'за 24 часа'],
+    ],
+    'en' => [
+        ['icon' => 'shield', 'label' => 'Payment Guarantee',     'sub' => '100% on time'],
+        ['icon' => 'users',  'label' => '3000+ clients',         'sub' => 'trust us'],
+        ['icon' => 'star',   'label' => 'Trusted Partner',       'sub' => 'since 2018'],
+        ['icon' => 'zap',    'label' => 'Quick Start',           'sub' => 'within 24h'],
+    ],
+    'ge' => [
+        ['icon' => 'shield', 'label' => 'გადახდის გარანტია',     'sub' => '100% დროულად'],
+        ['icon' => 'users',  'label' => '3000+ კლიენტი',         'sub' => 'გვენდობა'],
+        ['icon' => 'star',   'label' => 'სანდო პარტნიორი',       'sub' => '2018 წლიდან'],
+        ['icon' => 'zap',    'label' => 'სწრაფი დაწყება',        'sub' => '24 საათში'],
+    ],
+    'tr' => [
+        ['icon' => 'shield', 'label' => 'Ödeme Garantisi',       'sub' => '%100 zamanında'],
+        ['icon' => 'users',  'label' => '3000+ müşteri',         'sub' => 'bize güvenir'],
+        ['icon' => 'star',   'label' => 'Güvenilir Ortak',       'sub' => '2018\'den beri'],
+        ['icon' => 'zap',    'label' => 'Hızlı Başlangıç',       'sub' => '24 saat içinde'],
+    ],
+];
+$trust = $trustCards[$lang] ?? $trustCards['ru'];
+
+$trustIcons = [
+    'shield' => '<polyline points="12 22 12 22"/><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"/>',
+    'users'  => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    'star'   => '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+    'zap'    => '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+];
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -294,12 +330,74 @@ $csrfToken = csrfToken();
             to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* ── Карточки доверия ── */
+        .trust {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 32px;
+            animation: fadeUp 0.4s 0.17s ease both;
+        }
+
+        .trust-card {
+            background: #fff;
+            border: 1px solid rgba(200,168,75,0.18);
+            border-radius: 12px;
+            padding: 14px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(200,168,75,0.07);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .trust-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(200,168,75,0.15);
+        }
+
+        .trust-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f7eed6, #e8c96b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .trust-icon svg {
+            width: 18px; height: 18px;
+            stroke: var(--gold-dk);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .trust-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--dark);
+            line-height: 1.3;
+        }
+
+        .trust-sub {
+            font-size: 10px;
+            color: var(--muted);
+            line-height: 1.3;
+        }
+
         @media (max-width: 480px) {
             .wrap { padding: 48px 20px 72px; }
             .headline { letter-spacing: -0.5px; }
             .btn { padding: 16px 20px; font-size: 15px; }
             .lang-sw { top: 12px; right: 12px; }
             .lang-btn { padding: 7px 10px; }
+            .trust { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -327,6 +425,19 @@ $csrfToken = csrfToken();
     <?php if ($sloganPos === 'above' && $slogan): ?>
         <p class="slogan slogan-above"><?= e($slogan) ?></p>
     <?php endif; ?>
+
+    <!-- Карточки доверия -->
+    <div class="trust">
+        <?php foreach ($trust as $card): ?>
+        <div class="trust-card">
+            <div class="trust-icon">
+                <svg viewBox="0 0 24 24"><?= $trustIcons[$card['icon']] ?></svg>
+            </div>
+            <div class="trust-label"><?= e($card['label']) ?></div>
+            <div class="trust-sub"><?= e($card['sub']) ?></div>
+        </div>
+        <?php endforeach; ?>
+    </div>
 
     <div class="buttons">
         <?php foreach ($buttons as $idx => $btn): ?>
