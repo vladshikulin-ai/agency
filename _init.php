@@ -214,3 +214,33 @@ function requireAdmin(): void {
 function e(string $s): string {
     return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
+
+// ─── Multilingual ─────────────────────────────────────────────────────────────
+
+define('SUPPORTED_LANGS', ['ru', 'en', 'ka', 'tr']);
+
+function detectLang(): string {
+    // 1. Cookie (выбор пользователя)
+    if (!empty($_COOKIE['lang']) && in_array($_COOKIE['lang'], SUPPORTED_LANGS, true)) {
+        return $_COOKIE['lang'];
+    }
+    // 2. Accept-Language браузера
+    $accept = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '';
+    foreach (preg_split('/[,;]/', $accept) as $part) {
+        $code = strtolower(substr(trim($part), 0, 2));
+        if (in_array($code, SUPPORTED_LANGS, true)) {
+            return $code;
+        }
+    }
+    return 'ru';
+}
+
+/**
+ * Получить конфиг с учётом языка.
+ * Если перевод пустой — откат на русский.
+ */
+function cfgLang(string $key, string $lang, string $default = ''): string {
+    if ($lang === 'ru') return cfg($key, $default);
+    $val = cfg("{$lang}_{$key}", '');
+    return $val !== '' ? $val : cfg($key, $default);
+}

@@ -454,6 +454,26 @@ if (!empty($_SESSION['flash_err'])) { $error   = $_SESSION['flash_err']; unset($
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
+        /* Языковые под-вкладки */
+        .lang-tabs { display: flex; gap: 4px; margin-bottom: 20px; }
+        .lang-tab {
+            padding: 7px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: var(--text-m);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+            font-family: inherit;
+            transition: all 0.15s;
+        }
+        .lang-tab:hover { color: var(--text); border-color: var(--text-m); }
+        .lang-tab.active { color: var(--gold); border-color: var(--gold); background: rgba(201,168,76,0.07); }
+        .lang-panel { display: none; }
+        .lang-panel.active { display: block; }
+
         /* Separator между кнопками в настройках */
         .btn-section {
             background: var(--bg2);
@@ -602,22 +622,61 @@ if (!empty($_SESSION['flash_err'])) { $error   = $_SESSION['flash_err']; unset($
 
         <!-- ── SETTINGS ──────────────────────────────────────── -->
         <div class="tab-panel" id="panel-settings">
+            <?php
+            $langNames = ['ru' => 'РУ', 'en' => 'EN', 'ka' => 'KA', 'tr' => 'TR'];
+            ?>
             <form method="post" action="/admin/save.php">
                 <input type="hidden" name="csrf" value="<?= e($csrf) ?>">
                 <input type="hidden" name="action" value="settings">
 
+                <!-- Языковые вкладки -->
+                <div class="lang-tabs">
+                    <?php foreach ($langNames as $lc => $ln): ?>
+                    <button type="button" class="lang-tab <?= $lc === 'ru' ? 'active' : '' ?>"
+                            onclick="switchLang('<?= $lc ?>')"><?= $ln ?></button>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- Контент для каждого языка -->
+                <?php foreach ($langNames as $lc => $ln):
+                    $p  = $lc === 'ru' ? '' : "{$lc}_";
+                    $lt = cfgLang('site_title', $lc);
+                    $ls = cfgLang('slogan', $lc);
+                ?>
+                <div class="lang-panel <?= $lc === 'ru' ? 'active' : '' ?>" id="lang-<?= $lc ?>">
+                    <div class="form-card" style="margin-bottom:16px;">
+                        <div class="section-title" style="margin-bottom:16px;">
+                            Текст на <?= $ln ?> <?= $lc !== 'ru' ? '<span style="font-size:11px;color:var(--text-m);font-weight:400">(если пусто — используется русский)</span>' : '' ?>
+                        </div>
+                        <div class="form-grid">
+                            <div class="field full">
+                                <label>Название сайта</label>
+                                <input type="text" name="<?= $p ?>site_title" value="<?= e($lt) ?>" maxlength="120">
+                            </div>
+                            <div class="field full">
+                                <label>Лозунг</label>
+                                <textarea name="<?= $p ?>slogan" maxlength="400"><?= e($ls) ?></textarea>
+                            </div>
+                        </div>
+                        <?php for ($i = 0; $i < 3; $i++):
+                            $bt = cfgLang("button_{$i}_text", $lc);
+                        ?>
+                        <div style="margin-top:16px;">
+                            <div class="field">
+                                <label>Кнопка <?= $i+1 ?> — текст</label>
+                                <input type="text" name="<?= $p ?>button_<?= $i ?>_text" value="<?= e($bt) ?>" maxlength="80">
+                            </div>
+                        </div>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+
+                <!-- Общие настройки (URL, позиция лозунга) — один раз -->
                 <div class="form-card" style="margin-bottom:24px;">
-                    <div class="section-title">Основное</div>
+                    <div class="section-title" style="margin-bottom:16px;">Ссылки и отображение</div>
                     <div class="form-grid">
                         <div class="field full">
-                            <label>Название сайта / компании</label>
-                            <input type="text" name="site_title" value="<?= e($siteTitle) ?>" maxlength="120">
-                        </div>
-                        <div class="field full">
-                            <label>Лозунг / текст</label>
-                            <textarea name="slogan" maxlength="400"><?= e($slogan) ?></textarea>
-                        </div>
-                        <div class="field">
                             <label>Позиция лозунга</label>
                             <select name="slogan_position">
                                 <option value="above" <?= $sloganPos === 'above' ? 'selected' : '' ?>>Над кнопками</option>
@@ -625,32 +684,25 @@ if (!empty($_SESSION['flash_err'])) { $error   = $_SESSION['flash_err']; unset($
                             </select>
                         </div>
                     </div>
-                </div>
-
-                <?php for ($i = 0; $i < 3; $i++): ?>
-                <div class="btn-section">
-                    <div class="btn-section-header">
-                        <span>Кнопка <?= $i + 1 ?></span>
-                        <label class="toggle" title="Включить/выключить кнопку">
-                            <input type="checkbox" name="button_<?= $i ?>_enabled" value="1" <?= $buttons[$i]['enabled'] === '1' ? 'checked' : '' ?>>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                    <div class="form-grid">
-                        <div class="field">
-                            <label>Текст кнопки</label>
-                            <input type="text" name="button_<?= $i ?>_text" value="<?= e($buttons[$i]['text']) ?>" maxlength="80">
+                    <?php for ($i = 0; $i < 3; $i++): ?>
+                    <div class="btn-section" style="margin-top:16px;">
+                        <div class="btn-section-header">
+                            <span>Кнопка <?= $i + 1 ?></span>
+                            <label class="toggle" title="Включить/выключить">
+                                <input type="checkbox" name="button_<?= $i ?>_enabled" value="1" <?= $buttons[$i]['enabled'] === '1' ? 'checked' : '' ?>>
+                                <span class="toggle-slider"></span>
+                            </label>
                         </div>
                         <div class="field">
-                            <label>URL (ссылка)</label>
+                            <label>URL (один для всех языков)</label>
                             <input type="url" name="button_<?= $i ?>_url" value="<?= e($buttons[$i]['url']) ?>" maxlength="500" placeholder="https://">
                         </div>
                     </div>
+                    <?php endfor; ?>
                 </div>
-                <?php endfor; ?>
 
                 <div class="btn-row">
-                    <button type="submit" class="btn-primary">Сохранить изменения</button>
+                    <button type="submit" class="btn-primary">Сохранить все языки</button>
                     <a href="/" target="_blank" class="btn-secondary">Посмотреть сайт</a>
                 </div>
             </form>
@@ -689,8 +741,18 @@ function showTab(name) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
     document.getElementById('panel-' + name).classList.add('active');
-    // Подсветить nav-item в sidebar
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+}
+
+function switchLang(lc) {
+    document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.lang-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.lang-tab').forEach(t => {
+        if (t.textContent.trim().toLowerCase() === lc || t.getAttribute('onclick').includes("'" + lc + "'")) {
+            t.classList.add('active');
+        }
+    });
+    document.getElementById('lang-' + lc).classList.add('active');
 }
 </script>
 

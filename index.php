@@ -22,17 +22,26 @@ if (!$stmt->fetchColumn()) {
        ->execute([$ipHash, $today, time()]);
 }
 
+// ─── Язык ────────────────────────────────────────────────────────────────────
+if (isset($_GET['lang']) && in_array($_GET['lang'], SUPPORTED_LANGS, true)) {
+    $cookieLang = $_GET['lang'];
+    setcookie('lang', $cookieLang, time() + 60 * 60 * 24 * 365, '/', '', true, true);
+    header('Location: /');
+    exit;
+}
+$lang = detectLang();
+
 // ─── Конфиг ──────────────────────────────────────────────────────────────────
-$title       = cfg('site_title', 'Кадровое Агентство');
-$slogan      = cfg('slogan', '');
-$sloganPos   = cfg('slogan_position', 'above');
+$title     = cfgLang('site_title', $lang, 'Кадровое Агентство');
+$slogan    = cfgLang('slogan', $lang, '');
+$sloganPos = cfg('slogan_position', 'above');
 
 $buttons = [];
 for ($i = 0; $i < 3; $i++) {
     if (cfg("button_{$i}_enabled", '1') === '1') {
         $buttons[] = [
             'index' => $i,
-            'text'  => cfg("button_{$i}_text", "Кнопка " . ($i + 1)),
+            'text'  => cfgLang("button_{$i}_text", $lang, "Button " . ($i + 1)),
             'url'   => cfg("button_{$i}_url", '#'),
         ];
     }
@@ -315,14 +324,56 @@ $csrfToken = csrfToken();
             to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* ── Переключатель языков ── */
+        .lang-sw {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .lang-btn {
+            padding: 8px 12px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.32);
+            text-decoration: none;
+            border-right: 1px solid rgba(255,255,255,0.07);
+            transition: all 0.15s;
+        }
+
+        .lang-btn:last-child { border-right: none; }
+        .lang-btn:hover { color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.05); }
+
+        .lang-btn.active {
+            color: #fff;
+            background: var(--accent);
+        }
+
         @media (max-width: 480px) {
             .wrap { padding: 48px 20px 72px; }
             .headline { letter-spacing: -1px; }
             .btn { padding: 18px 18px; font-size: 15px; }
+            .lang-sw { top: 12px; right: 12px; }
+            .lang-btn { padding: 7px 9px; }
         }
     </style>
 </head>
 <body>
+
+<!-- Переключатель языков -->
+<nav class="lang-sw">
+    <a href="?lang=ru" class="lang-btn <?= $lang === 'ru' ? 'active' : '' ?>">РУ</a>
+    <a href="?lang=en" class="lang-btn <?= $lang === 'en' ? 'active' : '' ?>">EN</a>
+    <a href="?lang=ka" class="lang-btn <?= $lang === 'ka' ? 'active' : '' ?>">KA</a>
+    <a href="?lang=tr" class="lang-btn <?= $lang === 'tr' ? 'active' : '' ?>">TR</a>
+</nav>
 
 <div class="wrap">
 

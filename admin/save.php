@@ -30,36 +30,38 @@ $action = $_POST['action'] ?? '';
 // ─── Сохранение настроек сайта ───────────────────────────────────────────────
 if ($action === 'settings') {
 
-    $siteTitle   = trim($_POST['site_title'] ?? '');
-    $slogan      = trim($_POST['slogan'] ?? '');
-    $sloganPos   = in_array($_POST['slogan_position'] ?? '', ['above', 'below']) ? $_POST['slogan_position'] : 'above';
-
-    if (strlen($siteTitle) > 120)  { $siteTitle = mb_substr($siteTitle, 0, 120); }
-    if (strlen($slogan) > 400)     { $slogan    = mb_substr($slogan, 0, 400); }
-
-    setCfg('site_title',      $siteTitle);
-    setCfg('slogan',          $slogan);
+    $sloganPos = in_array($_POST['slogan_position'] ?? '', ['above', 'below']) ? $_POST['slogan_position'] : 'above';
     setCfg('slogan_position', $sloganPos);
 
+    // Сохраняем контент для каждого языка
+    foreach (SUPPORTED_LANGS as $l) {
+        $prefix = $l === 'ru' ? '' : "{$l}_";
+
+        $siteTitle = trim($_POST["{$prefix}site_title"] ?? '');
+        $slogan    = trim($_POST["{$prefix}slogan"]     ?? '');
+
+        if (mb_strlen($siteTitle) > 120) $siteTitle = mb_substr($siteTitle, 0, 120);
+        if (mb_strlen($slogan)    > 400) $slogan    = mb_substr($slogan, 0, 400);
+
+        setCfg("{$prefix}site_title", $siteTitle);
+        setCfg("{$prefix}slogan",     $slogan);
+
+        for ($i = 0; $i < 3; $i++) {
+            $text = trim($_POST["{$prefix}button_{$i}_text"] ?? '');
+            if (mb_strlen($text) > 80) $text = mb_substr($text, 0, 80);
+            setCfg("{$prefix}button_{$i}_text", $text);
+        }
+    }
+
+    // URL и включение — общие для всех языков
     for ($i = 0; $i < 3; $i++) {
-        $text    = trim($_POST["button_{$i}_text"] ?? '');
-        $url     = trim($_POST["button_{$i}_url"]  ?? '');
+        $url     = trim($_POST["button_{$i}_url"] ?? '');
         $enabled = isset($_POST["button_{$i}_enabled"]) ? '1' : '0';
 
-        // Ограничения длины
-        if (strlen($text) > 80) $text = mb_substr($text, 0, 80);
-        if (strlen($url)  > 500) $url = '';
+        if (strlen($url) > 500) $url = '';
+        if ($url !== '' && !preg_match('#^https?://#i', $url)) $url = '';
+        if ($url !== '' && !filter_var($url, FILTER_VALIDATE_URL)) $url = '';
 
-        // Валидация URL — только http/https
-        if ($url !== '' && !preg_match('#^https?://#i', $url)) {
-            $url = '';
-        }
-        // Дополнительная валидация через filter_var
-        if ($url !== '' && !filter_var($url, FILTER_VALIDATE_URL)) {
-            $url = '';
-        }
-
-        setCfg("button_{$i}_text",    $text);
         setCfg("button_{$i}_url",     $url);
         setCfg("button_{$i}_enabled", $enabled);
     }
