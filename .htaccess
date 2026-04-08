@@ -42,8 +42,9 @@ Options -Indexes -MultiViews
     ExpiresByType application/javascript "access plus 7 days"
 </IfModule>
 
-# ── Редирект HTTP → HTTPS (раскомментировать после настройки SSL) ─────────────
+# ── Редирект HTTP → HTTPS (совместим с Cloudflare) ───────────────────────────
 
-# RewriteEngine On
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
