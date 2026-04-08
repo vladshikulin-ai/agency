@@ -48,29 +48,25 @@ $csrfToken = csrfToken();
     <title><?= e($title) ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg:       #080810;
-            --bg2:      #0f0f1a;
-            --gold:     #c9a84c;
-            --gold-lt:  #e8c96b;
-            --gold-dk:  #a07830;
-            --text:     #f0f0f0;
-            --text-m:   #8888aa;
-            --border:   #1e1e30;
-            --card:     #10101e;
+            --bg:      #000000;
+            --accent:  #0057ff;
+            --accent2: #00c2ff;
+            --white:   #ffffff;
+            --dim:     rgba(255,255,255,0.42);
+            --dim2:    rgba(255,255,255,0.07);
+            --border:  rgba(255,255,255,0.10);
         }
 
-        html, body {
-            height: 100%;
-        }
+        html, body { height: 100%; }
 
         body {
             background: var(--bg);
-            color: var(--text);
+            color: var(--white);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
@@ -81,108 +77,117 @@ $csrfToken = csrfToken();
             overflow-x: hidden;
         }
 
-        /* Фоновый паттерн */
+        /* Фоновый свет сверху */
         body::before {
             content: '';
             position: fixed;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 60%),
-                linear-gradient(135deg, #080810 0%, #0f0f1a 50%, #080810 100%);
+            top: -200px; left: 50%;
+            transform: translateX(-50%);
+            width: 800px; height: 500px;
+            background: radial-gradient(ellipse, rgba(0,87,255,0.18) 0%, transparent 70%);
             pointer-events: none;
             z-index: 0;
         }
 
-        /* Сетка */
+        /* Тонкая сетка */
         body::after {
             content: '';
             position: fixed;
             inset: 0;
             background-image:
-                linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 80px 80px;
             pointer-events: none;
             z-index: 0;
         }
 
-        .container {
+        /* ── Контейнер ── */
+        .wrap {
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 680px;
-            padding: 48px 32px;
+            max-width: 640px;
+            padding: 60px 32px 80px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 0;
+            align-items: flex-start;
         }
 
-        /* Логотип / заголовок */
-        .brand {
-            display: flex;
-            flex-direction: column;
+        /* ── Бейдж-лейбл ── */
+        .label {
+            display: inline-flex;
             align-items: center;
-            margin-bottom: 48px;
+            gap: 7px;
+            padding: 5px 12px;
+            border: 1px solid rgba(0,87,255,0.5);
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--accent2);
+            background: rgba(0,87,255,0.10);
+            margin-bottom: 28px;
         }
 
-        .brand-icon {
-            width: 64px;
-            height: 64px;
-            border: 2px solid var(--gold);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .label-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--accent2);
+            box-shadow: 0 0 6px var(--accent2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.4; }
+        }
+
+        /* ── Заголовок ── */
+        .headline {
+            font-size: clamp(36px, 6vw, 58px);
+            font-weight: 900;
+            line-height: 1.08;
+            letter-spacing: -1.5px;
+            color: var(--white);
             margin-bottom: 20px;
-            position: relative;
-            background: rgba(201,168,76,0.06);
         }
 
-        .brand-icon svg {
-            width: 32px;
-            height: 32px;
-            fill: var(--gold);
+        .headline em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .brand-title {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: var(--text);
-            text-align: center;
-        }
-
-        .brand-title span {
-            color: var(--gold);
-        }
-
-        .brand-line {
-            width: 48px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
-            margin-top: 16px;
-        }
-
-        /* Слоган */
+        /* ── Слоган ── */
         .slogan {
-            text-align: center;
             font-size: 16px;
             font-weight: 400;
-            color: var(--text-m);
+            color: var(--dim);
             line-height: 1.7;
-            max-width: 520px;
+            max-width: 480px;
             white-space: pre-line;
         }
 
-        .slogan-above { margin-bottom: 40px; }
+        .slogan-above { margin-bottom: 48px; }
         .slogan-below { margin-top: 40px; }
 
-        /* Кнопки */
+        /* ── Разделитель ── */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent) 0%, rgba(0,194,255,0.3) 40%, transparent 100%);
+            margin-bottom: 40px;
+        }
+
+        /* ── Кнопки ── */
         .buttons {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
             width: 100%;
         }
 
@@ -190,139 +195,149 @@ $csrfToken = csrfToken();
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 28px;
-            background: var(--card);
+            padding: 22px 24px;
+            background: var(--dim2);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text);
+            border-left: 3px solid transparent;
+            border-radius: 4px;
+            color: var(--white);
             text-decoration: none;
-            font-size: 17px;
-            font-weight: 500;
-            letter-spacing: 0.1px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
             cursor: pointer;
-            transition: all 0.22s ease;
+            transition: all 0.18s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .btn::before {
+        .btn::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(201,168,76,0.07), transparent);
+            background: linear-gradient(90deg, rgba(0,87,255,0.08), transparent);
             opacity: 0;
-            transition: opacity 0.22s ease;
+            transition: opacity 0.18s ease;
         }
 
         .btn:hover {
-            border-color: var(--gold-dk);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(201,168,76,0.12), 0 2px 8px rgba(0,0,0,0.4);
+            border-left-color: var(--accent);
+            background: rgba(0,87,255,0.08);
+            border-color: rgba(0,87,255,0.35);
+            border-left-color: var(--accent);
+            transform: translateX(4px);
+            box-shadow: -4px 0 24px rgba(0,87,255,0.25);
         }
 
-        .btn:hover::before { opacity: 1; }
+        .btn:hover::after { opacity: 1; }
 
-        .btn:active {
-            transform: translateY(0);
-            box-shadow: none;
-        }
-
-        .btn-text {
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn-arrow {
-            position: relative;
-            z-index: 1;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: rgba(201,168,76,0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: background 0.22s ease;
-        }
-
-        .btn:hover .btn-arrow {
-            background: rgba(201,168,76,0.22);
-        }
-
-        .btn-arrow svg {
-            width: 16px;
-            height: 16px;
-            stroke: var(--gold);
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        /* Нумерация кнопок */
-        .btn-num {
-            position: relative;
-            z-index: 1;
-            font-size: 12px;
-            color: var(--gold);
-            font-weight: 600;
-            margin-right: 16px;
-            opacity: 0.8;
-            min-width: 20px;
-        }
+        .btn:active { transform: translateX(2px); }
 
         .btn-left {
             display: flex;
             align-items: center;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Footer */
-        .footer {
-            position: fixed;
-            bottom: 24px;
-            color: rgba(255,255,255,0.15);
-            font-size: 12px;
+        .btn-num {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent2);
             letter-spacing: 1px;
-            text-transform: uppercase;
+            opacity: 0.7;
+            min-width: 18px;
         }
 
-        /* Loading state для кнопок */
-        .btn.loading {
-            pointer-events: none;
-            opacity: 0.7;
+        .btn-text { position: relative; z-index: 1; }
+
+        .btn-arrow {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px; height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            transition: all 0.18s ease;
+            flex-shrink: 0;
+        }
+
+        .btn:hover .btn-arrow {
+            border-color: var(--accent);
+            background: rgba(0,87,255,0.2);
+        }
+
+        .btn-arrow svg {
+            width: 15px; height: 15px;
+            stroke: var(--white);
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform 0.18s ease;
+        }
+
+        .btn:hover .btn-arrow svg { transform: translateX(2px); }
+
+        /* ── Футер ── */
+        .footer-line {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.4;
+        }
+
+        .footer-text {
+            position: fixed;
+            bottom: 20px;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.18);
+        }
+
+        /* ── Анимация входа ── */
+        .wrap > * {
+            animation: fadeUp 0.5s ease both;
+        }
+        .label      { animation-delay: 0.0s; }
+        .headline   { animation-delay: 0.07s; }
+        .slogan-above, .divider { animation-delay: 0.14s; }
+        .buttons    { animation-delay: 0.20s; }
+        .slogan-below { animation-delay: 0.26s; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 480px) {
-            .container { padding: 32px 20px; }
-            .brand-title { font-size: 22px; }
-            .btn { padding: 18px 20px; font-size: 15px; }
-            .slogan { font-size: 14px; }
+            .wrap { padding: 48px 20px 72px; }
+            .headline { letter-spacing: -1px; }
+            .btn { padding: 18px 18px; font-size: 15px; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="wrap">
 
-    <div class="brand">
-        <div class="brand-icon">
-            <!-- Иконка: люди/карьера -->
-            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="10" cy="8" r="4"/>
-                <path d="M2 24c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
-                <circle cx="24" cy="8" r="3"/>
-                <path d="M24 16c3.3 0 6 2.7 6 6"/>
-                <line x1="20" y1="8" x2="26" y2="14" stroke-width="1.5" stroke="currentColor" fill="none"/>
-            </svg>
-        </div>
-        <h1 class="brand-title"><?= e($title) ?></h1>
-        <div class="brand-line"></div>
+    <div class="label">
+        <span class="label-dot"></span>
+        Кадровое агентство
     </div>
+
+    <h1 class="headline"><?= e($title) ?></h1>
 
     <?php if ($sloganPos === 'above' && $slogan): ?>
         <p class="slogan slogan-above"><?= e($slogan) ?></p>
     <?php endif; ?>
+
+    <div class="divider"></div>
 
     <div class="buttons">
         <?php foreach ($buttons as $idx => $btn): ?>
@@ -351,7 +366,8 @@ $csrfToken = csrfToken();
 
 </div>
 
-<div class="footer">Кадровое агентство</div>
+<div class="footer-line"></div>
+<div class="footer-text">Кадровое агентство</div>
 
 <script>
 (function() {
