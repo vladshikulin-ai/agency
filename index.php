@@ -218,7 +218,7 @@ $trustIcons = [
         /* ── Кнопки ── */
         .buttons {
             display: flex; flex-direction: column;
-            gap: 12px; width: 100%;
+            gap: 10px; width: 100%;
             animation: fadeUp 0.45s 0.20s ease both;
         }
 
@@ -226,15 +226,16 @@ $trustIcons = [
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 19px 24px;
+            padding: 15px 20px;
             background: var(--card);
             border: 1px solid rgba(255,255,255,0.07);
             border-radius: 10px;
             color: var(--text);
             text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 0.1px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
             cursor: pointer;
             transition: all 0.2s ease;
             position: relative;
@@ -244,15 +245,15 @@ $trustIcons = [
         .btn::before {
             content: '';
             position: absolute; inset: 0;
-            background: linear-gradient(90deg, rgba(212,168,67,0.06), transparent);
+            background: linear-gradient(90deg, rgba(212,168,67,0.07), transparent);
             opacity: 0;
             transition: opacity 0.2s ease;
         }
 
         .btn:hover {
-            border-color: rgba(212,168,67,0.4);
+            border-color: rgba(212,168,67,0.45);
             transform: translateY(-2px);
-            box-shadow: 0 10px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(212,168,67,0.15);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.4), 0 0 0 1px rgba(212,168,67,0.18);
         }
         .btn:hover::before { opacity: 1; }
         .btn:active { transform: translateY(0); }
@@ -262,19 +263,19 @@ $trustIcons = [
         .btn-arrow {
             position: relative; z-index: 1;
             display: flex; align-items: center; justify-content: center;
-            width: 30px; height: 30px;
-            border-radius: 6px;
+            width: 26px; height: 26px;
+            border-radius: 5px;
             background: rgba(212,168,67,0.1);
             border: 1px solid rgba(212,168,67,0.2);
             flex-shrink: 0;
             transition: all 0.2s ease;
         }
         .btn:hover .btn-arrow {
-            background: rgba(212,168,67,0.2);
+            background: rgba(212,168,67,0.22);
             border-color: var(--gold);
         }
         .btn-arrow svg {
-            width: 13px; height: 13px;
+            width: 12px; height: 12px;
             stroke: var(--gold);
             fill: none; stroke-width: 2.5;
             stroke-linecap: round; stroke-linejoin: round;
@@ -284,32 +285,31 @@ $trustIcons = [
 
         /* ── Плашки-награды (низ) ── */
         .awards {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 8px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
             width: 100%;
             margin-top: 44px;
             animation: fadeUp 0.45s 0.28s ease both;
+            border: 1px solid rgba(212,168,67,0.15);
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         .award {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0 18px;
+            justify-content: center;
+            padding: 18px 12px;
+            background: rgba(212,168,67,0.04);
             position: relative;
+            min-height: 80px;
         }
 
-        /* Вертикальный разделитель между плашками */
-        .award + .award::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 20%; bottom: 20%;
-            width: 1px;
-            background: linear-gradient(180deg, transparent, rgba(212,168,67,0.3), transparent);
-        }
+        .award:nth-child(odd) { border-right: 1px solid rgba(212,168,67,0.12); }
+        .award:nth-child(1),
+        .award:nth-child(2)   { border-bottom: 1px solid rgba(212,168,67,0.12); }
 
         /* Лавровая ветка SVG слева и справа */
         .award-inner {
