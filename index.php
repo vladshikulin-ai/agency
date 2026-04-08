@@ -161,16 +161,28 @@ $trustIcons = [
 
         /* ── Логотип ── */
         .logo-ring {
-            width: 68px; height: 68px;
-            border-radius: 50%;
-            border: 1.5px solid var(--gold);
-            background: var(--gold-dim);
             display: flex; align-items: center; justify-content: center;
             margin-bottom: 32px;
-            box-shadow: 0 0 32px rgba(212,168,67,0.18);
             animation: fadeUp 0.45s ease both;
         }
-        .logo-ring svg { width: 32px; height: 32px; fill: var(--gold); }
+        .logo-sign {
+            font-size: 72px;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(180deg, var(--gold-lt) 0%, var(--gold-dk) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 18px rgba(212,168,67,0.4));
+            animation: spinY 3s ease-in-out infinite;
+            display: inline-block;
+        }
+        @keyframes spinY {
+            0%   { transform: rotateY(0deg); }
+            45%  { transform: rotateY(180deg); }
+            55%  { transform: rotateY(180deg); }
+            100% { transform: rotateY(360deg); }
+        }
 
         /* ── Заголовок ── */
         .headline {
@@ -399,7 +411,7 @@ $trustIcons = [
 
     <!-- Логотип -->
     <div class="logo-ring">
-        <svg viewBox="0 0 32 32"><path d="M16 3C8.8 3 3 8.8 3 16s5.8 13 13 13 13-5.8 13-13S23.2 3 16 3zm1 18.9V23h-2v-1.1c-2.3-.4-4-2-4-4.9h2c0 2 1.1 3 3 3s3-1 3-2.5c0-1.6-1-2.5-3-3.1C13.6 13.6 11 12.3 11 9.5c0-2.5 1.7-4.1 4-4.4V4h2v1.1c2.3.4 4 2 4 4.9h-2c0-2-1-3-3-3s-3 .9-3 2.5c0 1.5 1 2.3 3.1 2.9C19.4 13 22 14.3 22 17.5c0 2.6-1.7 4.1-4 4.4z"/></svg>
+        <span class="logo-sign">$</span>
     </div>
 
     <!-- Заголовок -->
