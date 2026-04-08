@@ -52,37 +52,37 @@ $csrfToken = csrfToken();
 // ─── Карточки доверия (по языку) ─────────────────────────────────────────────
 $trustCards = [
     'ru' => [
-        ['icon' => 'shield', 'label' => 'Гарантия выплат',      'sub' => '100% без задержек'],
-        ['icon' => 'users',  'label' => '3000+ клиентов',        'sub' => 'доверяют нам'],
-        ['icon' => 'star',   'label' => 'Надёжный партнёр',      'sub' => 'с 2018 года'],
-        ['icon' => 'zap',    'label' => 'Быстрый старт',         'sub' => 'за 24 часа'],
+        ['icon' => 'shield', 'label' => 'Гарантия работы',    'sub' => 'трудоустройство 100%'],
+        ['icon' => 'zap',    'label' => 'Уровень зарплаты',   'sub' => 'фиксируем официально'],
+        ['icon' => 'star',   'label' => 'Стабильность',       'sub' => 'без задержек выплат'],
+        ['icon' => 'check',  'label' => 'Честные условия',    'sub' => 'всё прозрачно'],
     ],
     'en' => [
-        ['icon' => 'shield', 'label' => 'Payment Guarantee',     'sub' => '100% on time'],
-        ['icon' => 'users',  'label' => '3000+ clients',         'sub' => 'trust us'],
-        ['icon' => 'star',   'label' => 'Trusted Partner',       'sub' => 'since 2018'],
-        ['icon' => 'zap',    'label' => 'Quick Start',           'sub' => 'within 24h'],
+        ['icon' => 'shield', 'label' => 'Job Guarantee',      'sub' => '100% placement'],
+        ['icon' => 'zap',    'label' => 'Fixed Salary',       'sub' => 'officially confirmed'],
+        ['icon' => 'star',   'label' => 'Stability',          'sub' => 'no payment delays'],
+        ['icon' => 'check',  'label' => 'Fair Terms',         'sub' => 'fully transparent'],
     ],
     'ge' => [
-        ['icon' => 'shield', 'label' => 'გადახდის გარანტია',     'sub' => '100% დროულად'],
-        ['icon' => 'users',  'label' => '3000+ კლიენტი',         'sub' => 'გვენდობა'],
-        ['icon' => 'star',   'label' => 'სანდო პარტნიორი',       'sub' => '2018 წლიდან'],
-        ['icon' => 'zap',    'label' => 'სწრაფი დაწყება',        'sub' => '24 საათში'],
+        ['icon' => 'shield', 'label' => 'სამუშაოს გარანტია', 'sub' => '100% დასაქმება'],
+        ['icon' => 'zap',    'label' => 'ხელფასის დონე',      'sub' => 'ოფიციალურად'],
+        ['icon' => 'star',   'label' => 'სტაბილურობა',        'sub' => 'გადახდის გარეშე'],
+        ['icon' => 'check',  'label' => 'სამართლიანი პირობები','sub' => 'გამჭვირვალედ'],
     ],
     'tr' => [
-        ['icon' => 'shield', 'label' => 'Ödeme Garantisi',       'sub' => '%100 zamanında'],
-        ['icon' => 'users',  'label' => '3000+ müşteri',         'sub' => 'bize güvenir'],
-        ['icon' => 'star',   'label' => 'Güvenilir Ortak',       'sub' => '2018\'den beri'],
-        ['icon' => 'zap',    'label' => 'Hızlı Başlangıç',       'sub' => '24 saat içinde'],
+        ['icon' => 'shield', 'label' => 'İş Garantisi',       'sub' => '%100 istihdam'],
+        ['icon' => 'zap',    'label' => 'Maaş Seviyesi',      'sub' => 'resmi olarak'],
+        ['icon' => 'star',   'label' => 'Kararlılık',         'sub' => 'gecikme yok'],
+        ['icon' => 'check',  'label' => 'Adil Koşullar',      'sub' => 'şeffaf süreç'],
     ],
 ];
 $trust = $trustCards[$lang] ?? $trustCards['ru'];
 
 $trustIcons = [
-    'shield' => '<polyline points="12 22 12 22"/><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"/>',
-    'users'  => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    'shield' => '<path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"/>',
     'star'   => '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
     'zap'    => '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+    'check'  => '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
 ];
 ?>
 <!DOCTYPE html>
