@@ -623,7 +623,7 @@ if (!empty($_SESSION['flash_err'])) { $error   = $_SESSION['flash_err']; unset($
         <!-- ── SETTINGS ──────────────────────────────────────── -->
         <div class="tab-panel" id="panel-settings">
             <?php
-            $langNames = ['ru' => 'РУ', 'en' => 'EN', 'ka' => 'KA', 'tr' => 'TR'];
+            $langNames = ['ru' => 'РУ', 'en' => 'EN', 'ge' => 'GE', 'tr' => 'TR'];
             ?>
             <form method="post" action="/admin/save.php">
                 <input type="hidden" name="csrf" value="<?= e($csrf) ?>">

@@ -59,13 +59,13 @@ function initDB(PDO $db): void {
 
     // Первый запуск — заполнить конфиг дефолтами
     if ((int)$db->query("SELECT COUNT(*) FROM config")->fetchColumn() === 0) {
-        $password = bin2hex(random_bytes(8)); // 16-символьный hex
+        $password = bin2hex(random_bytes(8));
         $hash     = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 
         $defaults = [
             'admin_password'  => $hash,
             'site_title'      => 'КадрПро — Кадровое Агентство',
-            'slogan'          => 'Ваш успех — наша работа.\nНайдите лучших специалистов или работу мечты.',
+            'slogan'          => "Ваш успех — наша работа.\nНайдите лучших специалистов или работу мечты.",
             'slogan_position' => 'above',
             'button_0_text'   => 'Найти работу',
             'button_0_url'    => 'https://example.com',
@@ -88,6 +88,30 @@ function initDB(PDO $db): void {
             "После первого входа смените пароль и удалите этот файл!\n"
         );
     }
+
+    // Переводы — INSERT OR IGNORE (не перезаписывают уже сохранённые значения)
+    $translations = [
+        // English
+        'en_site_title'    => 'KadrPro — HR Agency',
+        'en_slogan'        => "Your success is our work.\nFind the best specialists or your dream job.",
+        'en_button_0_text' => 'Find a Job',
+        'en_button_1_text' => 'Post a Vacancy',
+        'en_button_2_text' => 'About Us',
+        // Georgian
+        'ge_site_title'    => 'KadrPro — საკადრო სააგენტო',
+        'ge_slogan'        => "თქვენი წარმატება — ჩვენი საქმეა.\nიპოვეთ საუკეთესო სპეციალისტები ან სამოცნაბო სამუშაო.",
+        'ge_button_0_text' => 'სამუშაოს პოვნა',
+        'ge_button_1_text' => 'ვაკანსიის განთავსება',
+        'ge_button_2_text' => 'ჩვენ შესახებ',
+        // Turkish
+        'tr_site_title'    => 'KadrPro — İnsan Kaynakları Ajansı',
+        'tr_slogan'        => "Başarınız bizim işimiz.\nEn iyi uzmanları veya hayalinizdeki işi bulun.",
+        'tr_button_0_text' => 'İş Bul',
+        'tr_button_1_text' => 'İlan Ver',
+        'tr_button_2_text' => 'Hakkımızda',
+    ];
+    $stmt = $db->prepare("INSERT OR IGNORE INTO config (key, value) VALUES (?, ?)");
+    foreach ($translations as $k => $v) $stmt->execute([$k, $v]);
 }
 
 // ─── Config ──────────────────────────────────────────────────────────────────
@@ -217,7 +241,7 @@ function e(string $s): string {
 
 // ─── Multilingual ─────────────────────────────────────────────────────────────
 
-define('SUPPORTED_LANGS', ['ru', 'en', 'ka', 'tr']);
+define('SUPPORTED_LANGS', ['ru', 'en', 'ge', 'tr']);
 
 function detectLang(): string {
     // 1. Cookie (выбор пользователя)

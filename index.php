@@ -371,7 +371,7 @@ $csrfToken = csrfToken();
 <nav class="lang-sw">
     <a href="?lang=ru" class="lang-btn <?= $lang === 'ru' ? 'active' : '' ?>">РУ</a>
     <a href="?lang=en" class="lang-btn <?= $lang === 'en' ? 'active' : '' ?>">EN</a>
-    <a href="?lang=ka" class="lang-btn <?= $lang === 'ka' ? 'active' : '' ?>">KA</a>
+    <a href="?lang=ge" class="lang-btn <?= $lang === 'ge' ? 'active' : '' ?>">GE</a>
     <a href="?lang=tr" class="lang-btn <?= $lang === 'tr' ? 'active' : '' ?>">TR</a>
 </nav>
 
