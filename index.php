@@ -93,28 +93,28 @@ $trustIcons = [
     <title><?= e($title) ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg:       #f5f3ee;
-            --bg2:      #ede9e0;
-            --gold:     #c8a84b;
-            --gold-dk:  #a07828;
-            --gold-lt:  #e8d08a;
-            --dark:     #1a1610;
-            --dark2:    #3d3420;
-            --muted:    #7a6e58;
-            --card:     #ffffff;
-            --border:   rgba(200,168,75,0.25);
+            --bg:      #0f0f0f;
+            --bg2:     #171717;
+            --gold:    #d4a843;
+            --gold-lt: #f0cc70;
+            --gold-dk: #9a7420;
+            --gold-dim:rgba(212,168,67,0.12);
+            --text:    #f0f0f0;
+            --muted:   #888888;
+            --border:  rgba(212,168,67,0.2);
+            --card:    #1a1a1a;
         }
 
         html, body { height: 100%; }
 
         body {
             background: var(--bg);
-            color: var(--dark);
+            color: var(--text);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
@@ -125,69 +125,65 @@ $trustIcons = [
             overflow: hidden;
         }
 
-        /* ── Canvas для частиц (под всем) ── */
+        /* ── Частицы ── */
         #particles {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
+            position: fixed; inset: 0;
+            z-index: 0; pointer-events: none;
         }
 
-        /* ── Мягкий радиальный свет в центре ── */
+        /* ── Свет сверху ── */
         .bg-glow {
             position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -60%);
-            width: 700px; height: 700px;
-            background: radial-gradient(ellipse, rgba(200,168,75,0.13) 0%, transparent 65%);
-            pointer-events: none;
-            z-index: 0;
+            top: -180px; left: 50%;
+            transform: translateX(-50%);
+            width: 600px; height: 500px;
+            background: radial-gradient(ellipse, rgba(212,168,67,0.10) 0%, transparent 65%);
+            pointer-events: none; z-index: 0;
         }
 
-        /* ── Контейнер ── */
+        /* ── Тонкая горизонтальная линия по центру ── */
+        .bg-line {
+            position: fixed;
+            top: 50%; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212,168,67,0.06), transparent);
+            pointer-events: none; z-index: 0;
+        }
+
+        /* ── Обёртка ── */
         .wrap {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 580px;
-            padding: 60px 32px 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
+            position: relative; z-index: 1;
+            width: 100%; max-width: 600px;
+            padding: 64px 32px 100px;
+            display: flex; flex-direction: column;
+            align-items: center; text-align: center;
         }
 
-        /* ── Логотип-монета ── */
+        /* ── Логотип ── */
         .logo-ring {
-            width: 72px; height: 72px;
+            width: 68px; height: 68px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold-lt), var(--gold-dk));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 28px;
-            box-shadow: 0 8px 32px rgba(200,168,75,0.35), 0 2px 8px rgba(0,0,0,0.08);
-            animation: fadeUp 0.4s ease both;
+            border: 1.5px solid var(--gold);
+            background: var(--gold-dim);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 32px;
+            box-shadow: 0 0 32px rgba(212,168,67,0.18);
+            animation: fadeUp 0.45s ease both;
         }
-
-        .logo-ring svg {
-            width: 34px; height: 34px;
-            fill: #fff;
-        }
+        .logo-ring svg { width: 32px; height: 32px; fill: var(--gold); }
 
         /* ── Заголовок ── */
         .headline {
-            font-size: clamp(28px, 5vw, 46px);
+            font-size: clamp(30px, 5.5vw, 52px);
             font-weight: 900;
-            line-height: 1.1;
-            letter-spacing: -1px;
-            color: var(--dark);
-            margin-bottom: 16px;
-            animation: fadeUp 0.4s 0.07s ease both;
+            line-height: 1.08;
+            letter-spacing: -1.5px;
+            color: var(--text);
+            margin-bottom: 18px;
+            animation: fadeUp 0.45s 0.07s ease both;
         }
-
-        .headline span {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dk));
+        .headline mark {
+            background: linear-gradient(90deg, var(--gold), var(--gold-lt));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -195,100 +191,143 @@ $trustIcons = [
 
         /* ── Слоган ── */
         .slogan {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 400;
+            font-style: italic;
             color: var(--muted);
-            line-height: 1.7;
-            max-width: 440px;
+            line-height: 1.75;
+            max-width: 420px;
+            letter-spacing: 0.1px;
             white-space: pre-line;
         }
-        .slogan-above { margin-bottom: 40px; animation: fadeUp 0.4s 0.14s ease both; }
-        .slogan-below { margin-top: 32px;    animation: fadeUp 0.4s 0.30s ease both; }
+        .slogan-above { margin-bottom: 44px; animation: fadeUp 0.45s 0.13s ease both; }
+        .slogan-below { margin-top: 36px;    animation: fadeUp 0.45s 0.32s ease both; }
 
         /* ── Кнопки ── */
         .buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            width: 100%;
-            animation: fadeUp 0.4s 0.20s ease both;
+            display: flex; flex-direction: column;
+            gap: 12px; width: 100%;
+            animation: fadeUp 0.45s 0.20s ease both;
         }
 
         .btn {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 18px 28px;
+            justify-content: space-between;
+            padding: 19px 24px;
             background: var(--card);
-            border: 1.5px solid var(--border);
-            border-radius: 14px;
-            color: var(--dark);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px;
+            color: var(--text);
             text-decoration: none;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
+            letter-spacing: 0.1px;
             cursor: pointer;
-            transition: all 0.22s ease;
-            box-shadow: 0 2px 12px rgba(200,168,75,0.08), 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
         }
 
         .btn::before {
             content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(200,168,75,0.08), transparent);
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, rgba(212,168,67,0.06), transparent);
             opacity: 0;
-            transition: opacity 0.22s ease;
+            transition: opacity 0.2s ease;
         }
 
         .btn:hover {
-            border-color: var(--gold);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 36px rgba(200,168,75,0.22), 0 3px 10px rgba(0,0,0,0.08);
-            color: var(--dark);
+            border-color: rgba(212,168,67,0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(212,168,67,0.15);
         }
-
         .btn:hover::before { opacity: 1; }
-        .btn:active { transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
 
-        .btn-text {
-            position: relative;
-            z-index: 1;
+        .btn-text { position: relative; z-index: 1; }
+
+        .btn-arrow {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; justify-content: center;
+            width: 30px; height: 30px;
+            border-radius: 6px;
+            background: rgba(212,168,67,0.1);
+            border: 1px solid rgba(212,168,67,0.2);
+            flex-shrink: 0;
+            transition: all 0.2s ease;
         }
+        .btn:hover .btn-arrow {
+            background: rgba(212,168,67,0.2);
+            border-color: var(--gold);
+        }
+        .btn-arrow svg {
+            width: 13px; height: 13px;
+            stroke: var(--gold);
+            fill: none; stroke-width: 2.5;
+            stroke-linecap: round; stroke-linejoin: round;
+            transition: transform 0.2s ease;
+        }
+        .btn:hover .btn-arrow svg { transform: translateX(2px); }
 
-        .btn-icon {
-            position: relative;
-            z-index: 1;
-            width: 28px; height: 28px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, var(--gold-lt), var(--gold));
+        /* ── Плашки-награды (низ) ── */
+        .awards {
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
-            transition: transform 0.22s ease;
+            flex-wrap: wrap;
+            gap: 8px 0;
+            width: 100%;
+            margin-top: 44px;
+            animation: fadeUp 0.45s 0.28s ease both;
         }
 
-        .btn:hover .btn-icon { transform: translateX(3px); }
-
-        .btn-icon svg {
-            width: 13px; height: 13px;
-            stroke: #fff;
-            fill: none;
-            stroke-width: 2.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+        .award {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 18px;
+            position: relative;
         }
 
-        /* ── Золотая линия внизу ── */
-        .footer-line {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold), var(--gold-lt), var(--gold), transparent);
+        /* Вертикальный разделитель между плашками */
+        .award + .award::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 20%; bottom: 20%;
+            width: 1px;
+            background: linear-gradient(180deg, transparent, rgba(212,168,67,0.3), transparent);
+        }
+
+        /* Лавровая ветка SVG слева и справа */
+        .award-inner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .laurel {
+            width: 18px; height: 28px;
             opacity: 0.6;
+        }
+        .laurel-right { transform: scaleX(-1); }
+
+        .award-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--gold-lt);
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .award-sub {
+            font-size: 9px;
+            color: var(--muted);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            text-align: center;
         }
 
         /* ── Переключатель языков ── */
@@ -297,107 +336,48 @@ $trustIcons = [
             top: 20px; right: 20px;
             z-index: 100;
             display: flex;
-            background: rgba(255,255,255,0.8);
+            background: rgba(20,20,20,0.85);
             border: 1px solid var(--border);
             border-radius: 8px;
             overflow: hidden;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            backdrop-filter: blur(12px);
         }
 
         .lang-btn {
-            padding: 8px 13px;
-            font-size: 10px;
-            font-weight: 700;
+            padding: 8px 12px;
+            font-size: 10px; font-weight: 700;
             letter-spacing: 1px;
             color: var(--muted);
             text-decoration: none;
-            border-right: 1px solid var(--border);
+            border-right: 1px solid rgba(255,255,255,0.05);
             transition: all 0.15s;
         }
-
         .lang-btn:last-child { border-right: none; }
-        .lang-btn:hover { color: var(--dark); background: rgba(200,168,75,0.08); }
+        .lang-btn:hover { color: var(--text); background: rgba(212,168,67,0.08); }
+        .lang-btn.active { color: #000; background: linear-gradient(135deg, var(--gold-lt), var(--gold)); }
 
-        .lang-btn.active {
-            color: #fff;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dk));
+        /* ── Золотая черта внизу ── */
+        .footer-line {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0.35;
         }
 
         /* ── Анимация ── */
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(24px); }
+            from { opacity: 0; transform: translateY(20px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ── Карточки доверия ── */
-        .trust {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            width: 100%;
-            margin-bottom: 32px;
-            animation: fadeUp 0.4s 0.17s ease both;
-        }
-
-        .trust-card {
-            background: #fff;
-            border: 1px solid rgba(200,168,75,0.18);
-            border-radius: 12px;
-            padding: 14px 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(200,168,75,0.07);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .trust-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(200,168,75,0.15);
-        }
-
-        .trust-icon {
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #f7eed6, #e8c96b);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .trust-icon svg {
-            width: 18px; height: 18px;
-            stroke: var(--gold-dk);
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .trust-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--dark);
-            line-height: 1.3;
-        }
-
-        .trust-sub {
-            font-size: 10px;
-            color: var(--muted);
-            line-height: 1.3;
-        }
-
-        @media (max-width: 480px) {
-            .wrap { padding: 48px 20px 72px; }
-            .headline { letter-spacing: -0.5px; }
-            .btn { padding: 16px 20px; font-size: 15px; }
+        @media (max-width: 520px) {
+            .wrap { padding: 52px 20px 90px; }
+            .headline { letter-spacing: -0.8px; }
+            .btn { padding: 17px 18px; }
+            .award { padding: 0 12px; }
+            .award-title { font-size: 10px; }
             .lang-sw { top: 12px; right: 12px; }
-            .lang-btn { padding: 7px 10px; }
-            .trust { grid-template-columns: repeat(2, 1fr); }
+            .lang-btn { padding: 7px 9px; }
         }
     </style>
 </head>
@@ -405,6 +385,7 @@ $trustIcons = [
 
 <canvas id="particles"></canvas>
 <div class="bg-glow"></div>
+<div class="bg-line"></div>
 
 <!-- Переключатель языков -->
 <nav class="lang-sw">
@@ -416,29 +397,20 @@ $trustIcons = [
 
 <div class="wrap">
 
+    <!-- Логотип -->
     <div class="logo-ring">
         <svg viewBox="0 0 32 32"><path d="M16 3C8.8 3 3 8.8 3 16s5.8 13 13 13 13-5.8 13-13S23.2 3 16 3zm1 18.9V23h-2v-1.1c-2.3-.4-4-2-4-4.9h2c0 2 1.1 3 3 3s3-1 3-2.5c0-1.6-1-2.5-3-3.1C13.6 13.6 11 12.3 11 9.5c0-2.5 1.7-4.1 4-4.4V4h2v1.1c2.3.4 4 2 4 4.9h-2c0-2-1-3-3-3s-3 .9-3 2.5c0 1.5 1 2.3 3.1 2.9C19.4 13 22 14.3 22 17.5c0 2.6-1.7 4.1-4 4.4z"/></svg>
     </div>
 
+    <!-- Заголовок -->
     <h1 class="headline"><?= e($title) ?></h1>
 
+    <!-- Слоган выше -->
     <?php if ($sloganPos === 'above' && $slogan): ?>
         <p class="slogan slogan-above"><?= e($slogan) ?></p>
     <?php endif; ?>
 
-    <!-- Карточки доверия -->
-    <div class="trust">
-        <?php foreach ($trust as $card): ?>
-        <div class="trust-card">
-            <div class="trust-icon">
-                <svg viewBox="0 0 24 24"><?= $trustIcons[$card['icon']] ?></svg>
-            </div>
-            <div class="trust-label"><?= e($card['label']) ?></div>
-            <div class="trust-sub"><?= e($card['sub']) ?></div>
-        </div>
-        <?php endforeach; ?>
-    </div>
-
+    <!-- Кнопки -->
     <div class="buttons">
         <?php foreach ($buttons as $idx => $btn): ?>
             <a
@@ -450,16 +422,52 @@ $trustIcons = [
                 data-csrf="<?= e($csrfToken) ?>"
             >
                 <span class="btn-text"><?= e($btn['text']) ?></span>
-                <div class="btn-icon">
+                <div class="btn-arrow">
                     <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
                 </div>
             </a>
         <?php endforeach; ?>
     </div>
 
+    <!-- Слоган ниже -->
     <?php if ($sloganPos === 'below' && $slogan): ?>
         <p class="slogan slogan-below"><?= e($slogan) ?></p>
     <?php endif; ?>
+
+    <!-- Плашки-награды -->
+    <div class="awards">
+        <?php
+        // SVG лавровой ветки
+        $laurel = '<svg class="laurel" viewBox="0 0 18 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 26 C9 26 9 20 9 14" stroke="#d4a843" stroke-width="1" stroke-linecap="round"/>
+            <path d="M9 22 C6 20 4 17 5 14" stroke="#d4a843" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            <path d="M9 18 C6 16 5 13 6 10" stroke="#d4a843" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            <path d="M9 14 C7 11 7 8 9 6" stroke="#d4a843" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            <path d="M9 22 C12 20 14 17 13 14" stroke="#d4a843" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            <path d="M9 18 C12 16 13 13 12 10" stroke="#d4a843" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            <path d="M9 14 C11 11 11 8 9 6" stroke="#d4a843" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            <circle cx="9" cy="5" r="1.5" fill="#d4a843" opacity="0.7"/>
+        </svg>';
+        foreach ($trust as $card): ?>
+        <div class="award">
+            <div class="award-inner">
+                <?= $laurel ?>
+                <div class="award-title"><?= e($card['label']) ?></div>
+                <svg class="laurel laurel-right" viewBox="0 0 18 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 26 C9 26 9 20 9 14" stroke="#d4a843" stroke-width="1" stroke-linecap="round"/>
+                    <path d="M9 22 C6 20 4 17 5 14" stroke="#d4a843" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                    <path d="M9 18 C6 16 5 13 6 10" stroke="#d4a843" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                    <path d="M9 14 C7 11 7 8 9 6" stroke="#d4a843" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                    <path d="M9 22 C12 20 14 17 13 14" stroke="#d4a843" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                    <path d="M9 18 C12 16 13 13 12 10" stroke="#d4a843" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                    <path d="M9 14 C11 11 11 8 9 6" stroke="#d4a843" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                    <circle cx="9" cy="5" r="1.5" fill="#d4a843" opacity="0.7"/>
+                </svg>
+            </div>
+            <div class="award-sub"><?= e($card['sub']) ?></div>
+        </div>
+        <?php endforeach; ?>
+    </div>
 
 </div>
 
