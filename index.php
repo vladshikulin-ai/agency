@@ -326,11 +326,6 @@ $csrfToken = csrfToken();
 
 <div class="wrap">
 
-    <div class="label">
-        <span class="label-dot"></span>
-        Кадровое агентство
-    </div>
-
     <h1 class="headline"><?= e($title) ?></h1>
 
     <?php if ($sloganPos === 'above' && $slogan): ?>
@@ -367,7 +362,6 @@ $csrfToken = csrfToken();
 </div>
 
 <div class="footer-line"></div>
-<div class="footer-text">Кадровое агентство</div>
 
 <script>
 (function() {
