@@ -89,29 +89,44 @@ function initDB(PDO $db): void {
         );
     }
 
-    // Переводы — INSERT OR IGNORE (не перезаписывают уже сохранённые значения)
-    $translations = [
-        // English
-        'en_site_title'    => 'KadrPro — HR Agency',
-        'en_slogan'        => "Your success is our work.\nFind the best specialists or your dream job.",
-        'en_button_0_text' => 'Find a Job',
-        'en_button_1_text' => 'Post a Vacancy',
-        'en_button_2_text' => 'About Us',
-        // Georgian
-        'ge_site_title'    => 'KadrPro — საკადრო სააგენტო',
-        'ge_slogan'        => "თქვენი წარმატება — ჩვენი საქმეა.\nიპოვეთ საუკეთესო სპეციალისტები ან სამოცნაბო სამუშაო.",
-        'ge_button_0_text' => 'სამუშაოს პოვნა',
-        'ge_button_1_text' => 'ვაკანსიის განთავსება',
-        'ge_button_2_text' => 'ჩვენ შესახებ',
-        // Turkish
-        'tr_site_title'    => 'KadrPro — İnsan Kaynakları Ajansı',
-        'tr_slogan'        => "Başarınız bizim işimiz.\nEn iyi uzmanları veya hayalinizdeki işi bulun.",
-        'tr_button_0_text' => 'İş Bul',
-        'tr_button_1_text' => 'İlan Ver',
-        'tr_button_2_text' => 'Hakkımızda',
-    ];
-    $stmt = $db->prepare("INSERT OR IGNORE INTO config (key, value) VALUES (?, ?)");
-    foreach ($translations as $k => $v) $stmt->execute([$k, $v]);
+    runMigrations($db);
+}
+
+function runMigrations(PDO $db): void {
+    $ver = (int)($db->query("SELECT value FROM config WHERE key='db_version'")->fetchColumn() ?: 0);
+
+    if ($ver < 1) {
+        // Миграция 1: обновить тексты на X24
+        $updates = [
+            'site_title'      => 'X24 - умножаем ваше время на деньги!',
+            'slogan'          => 'Напиши и узнай сколько сможешь заработать вместе с нами!',
+            'button_0_text'   => 'Найти работу',
+            'button_1_text'   => 'Разместить вакансию',
+            'button_2_text'   => 'О нас',
+            // English
+            'en_site_title'    => 'X24 — Multiply Your Time Into Money!',
+            'en_slogan'        => 'Write to us and find out how much you can earn with us!',
+            'en_button_0_text' => 'Find a Job',
+            'en_button_1_text' => 'Post a Vacancy',
+            'en_button_2_text' => 'About Us',
+            // Georgian
+            'ge_site_title'    => 'X24 — გაამრავლე შენი დრო ფულზე!',
+            'ge_slogan'        => 'დაგვიწერე და გაიგე რამდენის გამომუშავება შეგიძლია ჩვენთან ერთად!',
+            'ge_button_0_text' => 'სამუშაოს პოვნა',
+            'ge_button_1_text' => 'ვაკანსიის განთავსება',
+            'ge_button_2_text' => 'ჩვენ შესახებ',
+            // Turkish
+            'tr_site_title'    => 'X24 — Zamanınızı Paraya Çevirin!',
+            'tr_slogan'        => 'Yazın ve bizimle ne kadar kazanabileceğinizi öğrenin!',
+            'tr_button_0_text' => 'İş Bul',
+            'tr_button_1_text' => 'İlan Ver',
+            'tr_button_2_text' => 'Hakkımızda',
+        ];
+        $stmt = $db->prepare("INSERT OR REPLACE INTO config (key, value) VALUES (?, ?)");
+        foreach ($updates as $k => $v) $stmt->execute([$k, $v]);
+
+        $db->prepare("INSERT OR REPLACE INTO config (key, value) VALUES ('db_version', '1')")->execute();
+    }
 }
 
 // ─── Config ──────────────────────────────────────────────────────────────────
