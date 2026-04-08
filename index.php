@@ -218,6 +218,7 @@ $trustIcons = [
         /* ── Кнопки ── */
         .buttons {
             display: flex; flex-direction: column;
+            align-items: center;
             gap: 10px; width: 100%;
             animation: fadeUp 0.45s 0.20s ease both;
         }
@@ -226,15 +227,16 @@ $trustIcons = [
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 15px 20px;
+            padding: 14px 20px;
+            width: 72%;
             background: var(--card);
             border: 1px solid rgba(255,255,255,0.07);
             border-radius: 10px;
             color: var(--text);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.8px;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.2s ease;
