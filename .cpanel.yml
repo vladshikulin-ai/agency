@@ -6,4 +6,5 @@ deployment:
     - /bin/cp -rf _init.php "$DEPLOYPATH"
     - /bin/cp -rf index.php "$DEPLOYPATH"
     - /bin/cp -rf track.php "$DEPLOYPATH"
+    - /bin/cp -rf health.php "$DEPLOYPATH"
     - /bin/cp -rf admin "$DEPLOYPATH"

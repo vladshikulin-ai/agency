@@ -17,6 +17,7 @@ function getDB(): PDO {
         if (!is_dir(DATA_DIR)) mkdir(DATA_DIR, 0750, true);
         $db = new PDO('sqlite:' . DB_PATH);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $db->exec('PRAGMA busy_timeout=3000');
         $db->exec('PRAGMA journal_mode=WAL');
         $db->exec('PRAGMA synchronous=NORMAL');
         $db->exec('PRAGMA foreign_keys=ON');
@@ -126,6 +127,17 @@ function runMigrations(PDO $db): void {
         foreach ($updates as $k => $v) $stmt->execute([$k, $v]);
 
         $db->prepare("INSERT OR REPLACE INTO config (key, value) VALUES ('db_version', '1')")->execute();
+    }
+
+    if ($ver < 2) {
+        // Миграция 2: починка rate_limits (раздулась → тормозит DELETE)
+        // Старый индекс (ip_hash, action, timestamp) не помогает очистке WHERE action=? AND timestamp<?.
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_rl_action_ts ON rate_limits(action, timestamp)");
+        // Одноразово вычистить старше часа — убирает 99% накопленного мусора без ущерба
+        $cutoff = time() - 3600;
+        $db->prepare("DELETE FROM rate_limits WHERE timestamp < ?")->execute([$cutoff]);
+        $db->exec("VACUUM");
+        $db->prepare("INSERT OR REPLACE INTO config (key, value) VALUES ('db_version', '2')")->execute();
     }
 }
 
