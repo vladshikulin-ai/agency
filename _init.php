@@ -4,6 +4,19 @@
  * Не открывать напрямую — защищено .htaccess
  */
 
+// ─── Hardening PHP в проде ───────────────────────────────────────────────────
+// Не раскрывать PHP в заголовках, не отдавать stack traces клиенту.
+@ini_set('expose_php', '0');
+@ini_set('display_errors', '0');
+@ini_set('display_startup_errors', '0');
+@ini_set('log_errors', '1');
+@ini_set('session.cookie_httponly', '1');
+@ini_set('session.cookie_secure', '1');
+@ini_set('session.cookie_samesite', 'Lax');
+@ini_set('session.use_only_cookies', '1');
+@ini_set('session.use_strict_mode', '1');
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+
 define('DATA_DIR', __DIR__ . '/data/');
 define('DB_PATH', DATA_DIR . 'site.db');
 define('SETUP_FILE', DATA_DIR . 'SETUP_PASSWORD.txt');
@@ -255,6 +268,15 @@ function isAdmin(): bool {
 
 function requireAdmin(): void {
     if (!isAdmin()) {
+        header('Location: /admin/');
+        exit;
+    }
+    // Привязка сессии: IP + UA + таймаут 2 часа. При несовпадении — выкидываем.
+    $curr_ua = substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 200);
+    if ((isset($_SESSION['admin_ip']) && $_SESSION['admin_ip'] !== getClientIP())
+        || (isset($_SESSION['admin_ua']) && $_SESSION['admin_ua'] !== $curr_ua)
+        || (isset($_SESSION['admin_since']) && (time() - (int)$_SESSION['admin_since']) > 7200)) {
+        session_destroy();
         header('Location: /admin/');
         exit;
     }

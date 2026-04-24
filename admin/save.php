@@ -113,8 +113,10 @@ if ($action === 'password') {
 
     // Инвалидируем текущую сессию и перелогиниваем
     session_regenerate_id(true);
-    $_SESSION['admin']    = true;
-    $_SESSION['admin_ip'] = getClientIP();
+    $_SESSION['admin']       = true;
+    $_SESSION['admin_ip']    = getClientIP();
+    $_SESSION['admin_ua']    = substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 200);
+    $_SESSION['admin_since'] = time();
     $_SESSION['flash_ok'] = 'Пароль успешно изменён. Файл SETUP_PASSWORD.txt удалён.';
     header('Location: /admin/');
     exit;

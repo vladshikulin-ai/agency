@@ -9,30 +9,63 @@ $success = '';
 // ─── Обработка логина ────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'login') {
 
-    // Rate limit: 10 попыток за 15 минут с одного IP
-    if (!rateLimit('admin_login', 10, 900)) {
+    // Honeypot — скрытое поле заполняют только боты
+    $honeypot = $_POST['website'] ?? '';
+    if ($honeypot !== '') {
+        // Ничего не говорим боту, просто отдаём ту же страницу
+        usleep(300000);
+        $error = 'Неверный пароль.';
+    }
+    // Минимальное время между показом формы и отправкой (защита от instant-POST ботов)
+    elseif (isset($_POST['ts']) && (time() - (int)$_POST['ts']) < 1) {
+        usleep(300000);
+        $error = 'Неверный пароль.';
+    }
+    // CSRF-токен
+    elseif (!hash_equals($_SESSION['csrf'] ?? '', $_POST['csrf'] ?? '')) {
+        $error = 'Сессия истекла. Обновите страницу.';
+    }
+    // Глобальный rate limit на логин: 10 попыток за 15 минут с одного IP
+    elseif (!rateLimit('admin_login', 10, 900)) {
         $error = 'Слишком много попыток входа. Попробуйте через 15 минут.';
     } else {
+        // Прогрессивная задержка по числу недавних фейлов (anti-brute)
+        $db_r = getDB();
+        $stmt = $db_r->prepare("SELECT COUNT(*) FROM rate_limits WHERE action='admin_login_fail' AND ip_hash=? AND timestamp > ?");
+        $stmt->execute([hashIPRaw(getClientIP()), time() - 1800]);
+        $fails = (int)$stmt->fetchColumn();
+        if ($fails > 0) usleep(min($fails, 10) * 500000); // 0.5s, 1s, 1.5s, … до 5s
+
         $pw = $_POST['password'] ?? '';
         if (strlen($pw) > 0 && strlen($pw) <= 200 && password_verify($pw, cfg('admin_password'))) {
             session_regenerate_id(true);
             $_SESSION['admin'] = true;
             $_SESSION['admin_ip'] = getClientIP();
+            $_SESSION['admin_ua'] = substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 200);
+            $_SESSION['admin_since'] = time();
             header('Location: /admin/');
             exit;
         } else {
-            // Одинаковая задержка чтобы исключить timing attack
+            // Записываем неудачу в rate_limits для прогрессивной задержки
+            $db_r->prepare("INSERT INTO rate_limits (ip_hash, action, timestamp) VALUES (?,?,?)")
+                 ->execute([hashIPRaw(getClientIP()), 'admin_login_fail', time()]);
             usleep(300000);
             $error = 'Неверный пароль.';
         }
     }
 }
 
-// ─── Защита сессии (IP-binding) ───────────────────────────────────────────────
-if (isAdmin() && isset($_SESSION['admin_ip']) && $_SESSION['admin_ip'] !== getClientIP()) {
-    session_destroy();
-    header('Location: /admin/');
-    exit;
+// ─── Защита сессии (IP + UA binding + таймаут) ───────────────────────────────
+if (isAdmin()) {
+    $curr_ua = substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 200);
+    $session_age = time() - (int)($_SESSION['admin_since'] ?? 0);
+    if ((isset($_SESSION['admin_ip']) && $_SESSION['admin_ip'] !== getClientIP())
+        || (isset($_SESSION['admin_ua']) && $_SESSION['admin_ua'] !== $curr_ua)
+        || $session_age > 7200) {  // 2 часа максимум
+        session_destroy();
+        header('Location: /admin/');
+        exit;
+    }
 }
 
 // ─── Если не залогинен — показываем форму входа ───────────────────────────────
@@ -154,8 +187,14 @@ if (!isAdmin()) { ?>
         <div class="error"><?= e($error) ?></div>
     <?php endif; ?>
 
-    <form method="post">
+    <form method="post" autocomplete="off">
         <input type="hidden" name="action" value="login">
+        <input type="hidden" name="csrf" value="<?= e(csrfToken()) ?>">
+        <input type="hidden" name="ts" value="<?= time() ?>">
+        <div style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true">
+            <label>Website (leave empty)</label>
+            <input type="text" name="website" tabindex="-1" autocomplete="off">
+        </div>
         <div class="field">
             <label>Пароль</label>
             <input type="password" name="password" autofocus autocomplete="current-password">
